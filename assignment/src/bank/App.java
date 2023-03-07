@@ -18,36 +18,39 @@ public class App {
 			String cmd = sc.next(); // string을
 			
 			if (cmd.equals("종료")) {
-				System.out.println("bye");
+				System.out.println("OK bye.......");
 				break;
 				
 			} else if (cmd.equals("계좌신규")) {
-				System.out.println("이름입력");
-				String name = sc.next();
-				System.out.println("입금액 입력");
+				System.out.println("계좌 종류입력 ex) 입출금");
+				String accName = sc.next();
+				System.out.println("예금주 입력");
+				String accHolder = sc.next();
+				System.out.println("신규금액 입력");
 				double balance = Double.parseDouble(sc.next());
 				
 				try {
-					acc.getBalance(balance);
+					acc = new Account(accName, accHolder, balance);
+					System.out.println(acc); // 계좌가 생성되었다고 보여주기.
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 					return;
 				}
 				
-				acc = new Account(name, balance);
-				System.out.println(acc); // 계좌가 생성되었다고 보여주기.
+			} if(acc == null) {
+				System.out.println("계좌가 없습니다. 계좌 신규 후 다시 이용해 주세요."); }
 				
-			} else if (cmd.equals("출금")) {
+				else { if (cmd.equals("출금")) {
 				System.out.println("출금금액을 입력하세요");
 				double money = Double.parseDouble(sc.next());
 				//예외처리
 				try {
 					acc.withdraw(money); //출금 시
+					System.out.println("출금이 완료되었습니다. 현재 잔액 : "+ acc.getBalance());
+					System.out.println(acc); //정상이면 계좌정보도 함께
 				} catch (WithdrawException e) { //음수 에러나면
 					System.out.println(e.getMessage()); //메시지발생
 				}
-				System.out.println("출금이 완료되었습니다. 현재 잔액 : "+ acc.getBalance());
-				System.out.println(acc); //정상이면 계좌정보도 함께
 				
 			} else if (cmd.equals("입금")) {
 				
@@ -56,6 +59,7 @@ public class App {
 				//예외처리
 				try {
 					acc.deposit(money);
+					System.out.println("입금이 완료되었습니다. 현재 잔액 : "+ acc.getBalance());
 					System.out.println(acc);
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
@@ -63,9 +67,9 @@ public class App {
 				
 
 			} else if (cmd.equals("조회")) {
-				System.out.println("계좌현황 : ");
+				System.out.println("**계좌현황**  ");
 				System.out.println(acc);
-			}
+			}}
 
 			
 		} sc.close();

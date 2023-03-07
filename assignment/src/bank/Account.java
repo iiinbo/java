@@ -22,10 +22,13 @@ public class Account {
 	}
 	
 	//3. 
-	public Account(String accName, String accHolder, double balance) {
+	public Account(String accName, String accHolder, double balance) throws Exception {
 		this();
 		this.accName = accName;
 		this.accHolder = accHolder;
+		if(balance < 0) {
+			throw new Exception("에러코드(A0001) 신규금액 오류입니다. 금액을 다시 확인해 주세요.");
+		}
 		this.balance = balance;
 	}
 	//4.
@@ -36,12 +39,7 @@ public class Account {
 		this.balance = balance;
 	}
 
-	// 계좌신규 금액이 음수면 예외상황(0원신규는 가능함)
-	public double getBalance(double money) throws Exception {
-		if(money < 0 ) {
-			throw new Exception("에러코드(A0001) 신규금액 오류입니다. 금액을 다시 확인해 주세요.");
-	} return balance;
-		}
+	
 	
 	public double getBalance() {
 		return balance;
@@ -70,8 +68,8 @@ public class Account {
 	//출력정보
 	@Override
 	public String toString() {
-		return "Account [accNum=" + accNum + ", accName=" + accName + ", accHolder=" + accHolder + ", balance="
-				+ balance + "]";
+		return "고객님의 계좌번호 : " + accNum + " / 계좌 종류 : " + accName + " / 계좌 예금주명 : " + accHolder + " / 계좌 잔액 : "
+				+ balance;
 	}
 
 }
