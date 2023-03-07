@@ -65,6 +65,7 @@ public class Account {
 		}
 		this.balance -= money;
 	}
+
 	//출력정보
 	@Override
 	public String toString() {
