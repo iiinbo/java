@@ -17,8 +17,6 @@ public class App {
 		//2.
 		BankService<UserDTO, AccountDTO, TransactionDTO, String, String> service = new BankServiceImpl();
 		Scanner sc = new Scanner(System.in);
-		//고객정보 가져올 때 필요해서 만들었다.
-		CRUDService<String, UserDTO> userService = new UserService();
 		
 		while(true) {
 			UserDTO user = null; //객체를 밖에서 선언하기로 했다.
@@ -77,10 +75,11 @@ public class App {
 						}else if(cmn.equals("a")) {
 							System.out.println("a : Select Account 계좌 전체조회");
 							System.out.println("고객님이 로그인하신 사용자 정보로, 보유 중인 계좌 전체가 조회됩니다.");
-							String readid = user.getId(); //이미 로그인 한 상태이니, 시스템이 자동으로 user의 id값 가져오도록.
+							//이미 로그인 한 상태이니, 시스템이 자동으로 user(로그인 한 고객의 정보담겨있는 변수)의 id값 가져오도록.
+							 List<AccountDTO> list = null;
+							 list = service.getAllAccount(user.getId());//getAllAccount 계좌번호 조회 함수를 입력해주자.
+							
 							//계좌 여러개라면 모두 다 출력하자.
-						    List<AccountDTO> list = null;
-						    list = service.getAllAccount(readid);//getAllAccount 계좌번호 조회 함수를 입력해주자.
 						    for (AccountDTO data : list) {
 								System.out.println(data);
 							}
@@ -95,6 +94,15 @@ public class App {
 							//현재 구현 불가
 						}else if(cmn.equals("tr")) {
 							System.out.println("tr : Select Transaction 계좌이체내역 조회");
+							System.out.println("거래내역을 조회할 계좌번호를 입력해 주세요.");
+							String accNo = sc.next();
+							List<TransactionDTO> list = null; //담을 바구니 먼저 초기화하고,
+							list = service.getAllTr(accNo); //바구니안에 계좌번호 넣어주자
+							//계좌내역 여러개이니 모두 출력하자
+						    for (TransactionDTO tr : list) {
+								System.out.println(tr);
+							}
+							
 						}
 						
 					}

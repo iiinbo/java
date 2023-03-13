@@ -66,12 +66,21 @@ public class AccountDAO implements DAO<String,AccountDTO> {
 
 	//추상함수 추가
 	//내 계좌(사용자의) 조회 obj = id;
-	//이 함수는 사용자의 id를 입력하면 사용자가 가진 계좌를 모두 반환
+	//이 함수는 사용자의 id를 입력하면 사용자가 가진 모든 계좌를 반환
 	//Object obj = new String();
 	@Override
 	public List<AccountDTO> search(Object obj) throws Exception {
-		
-		return null;
+		List<AccountDTO> list = new ArrayList<AccountDTO>();
+		Collection<AccountDTO> col = db.values(); //hashmap에서 데이터 꺼낼 때. 컬렉션&db.values
+			//끄집어 낸 데이터를 for-each문으로 다 끄집어내고, 리스트에 담을 것	
+			//그러나 데이터 중 계좌정보만 담을 것! 조건은 if문으로 주기.
+		for(AccountDTO acc : col) {
+			//계좌 중에서 id(계좌정보에서 id값은 홀더)가 obj와 같은 것들만 집어넣기
+			if((acc.getHolder()).equals(obj)) {
+				list.add(acc);	
+			}
+		}
+		return list;
 	}
 	
 }

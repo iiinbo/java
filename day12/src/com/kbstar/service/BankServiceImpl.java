@@ -95,15 +95,15 @@ public class BankServiceImpl implements BankService<UserDTO, AccountDTO, Transac
 	@Override //사용자가 가진 계좌 모두조회 (고객기본 키값 입력하면 '계좌정보(AccountDTO)'다 나오게)
 	public List<AccountDTO> getAllAccount(String k) throws Exception {
 		List<AccountDTO> list = null;
-		list = accountDao.select();
+		list = accountDao.search(k);
+		 //=한줄로 축약 가능 . return accountDao.search(k);
 		
 		return list;
 	}
 
 	@Override //특정 계좌 이체내역 모두 조회
 	public List<TransactionDTO> getAllTr(String acc) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return transactionDao.search(acc);
 	}
 
 	@Override //계좌이체 행위
