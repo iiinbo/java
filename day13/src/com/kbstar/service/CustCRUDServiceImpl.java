@@ -92,7 +92,7 @@ public class CustCRUDServiceImpl implements CRUDService<String, Cust> {
 		}catch(Exception e) {
 			if(e instanceof SQLRecoverableException) {
 				throw new Exception("시스템 장애가 발생했습니다."); //서버오류일 때
-			}
+			} 
 		}
 		
 		return list;

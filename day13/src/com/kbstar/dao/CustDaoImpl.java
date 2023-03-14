@@ -1,14 +1,11 @@
 package com.kbstar.dao;
 
-import java.io.FileInputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import com.kbstar.dto.Cust;
 import com.kbstar.frame.DAO;
@@ -29,25 +26,7 @@ public class CustDaoImpl implements DAO<String, String, Cust> {
 		System.out.println("Driver Loading 성공!");
 	}
 
-	// 2. jdbc에서 각각 실행해주던 커넥션도 한번에 해주자
-	// (insert, delete, update 등 커넥션 변수 필요하면 여기서 지정한 getConnection()한번으로 사용가능)
-	public Connection getConnection() throws Exception {
-		Connection con = null;
-		// ip주소 바뀌더라도 아래 프로퍼티 구문 덕분에 반영 가능.
-		// 코드 안에 pwd 나 ip주소를 직접 입력하지 않아도 되며, 파일에서 수정되면 함께 가져온다.
-		Properties props = new Properties();
-		String fileName = "db_info.txt";
-		FileInputStream in = new FileInputStream(fileName);
-		props.load(in);
-
-		String id = props.getProperty("DB_ID");
-		String pwd = props.getProperty("DB_PWD");
-		String url = props.getProperty("DB_URL"); // 1521 사용자모드
-		con = DriverManager.getConnection(url, id, pwd); // 커넥션 값생성
-
-		return con;
-	}
-
+	
 	@Override
 	public void insert(Cust v) throws Exception { // 객체 들어오면 db에 입력한다.
 		try (Connection con = getConnection(); // 커넥션할 때, 한번에 쓰려고 위에서 만든 메소드쓰기!
