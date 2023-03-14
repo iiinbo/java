@@ -15,4 +15,11 @@ public class Sql {
 	public static String itemselectSql = "SELECT * FROM item WHERE id = ?";
 	public static String itemselectAllSql = "SELECT * FROM item";
 
+	
+	//Cart의 DML
+	public static String cartInsertSql = "INSERT INTO cart VALUES (?, ?, ?, ?, SYSDATE)";
+	public static String cartDeleteSql = "DELETE FROM cart WHERE id = ?";
+	public static String cartUpdateSql = "UPDATE cart SET user_id=?, item_id=?, cnt=? WHERE id = ?"; //WHERE절 누락 주의!
+	public static String cartselectSql = "SELECT * FROM cart WHERE id = ?";
+	public static String cartselectAllSql = "SELECT * FROM cart";
 }	
