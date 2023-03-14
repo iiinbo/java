@@ -1,5 +1,6 @@
 package com.kbstar.service;
 
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLRecoverableException;
 import java.util.List;
@@ -43,7 +44,8 @@ public class CustCRUDServiceImpl implements CRUDService<String, Cust> {
 				throw new Exception("삭제 도중 네트워크 오류가 발생했습니다.");
 			} else {
 				throw new Exception("해당 id가 존재하지 않습니다."); // 1차 dao에서 한번 던졌고 여기가 두번째라 문구쓴다.
-			}}
+			}
+		}
 	}
 
 	@Override
@@ -53,27 +55,47 @@ public class CustCRUDServiceImpl implements CRUDService<String, Cust> {
 			// k값 넣으면 삭제.
 			dao.delete(k);
 		} catch (Exception e) {
-			if(e instanceof SQLRecoverableException) {
+			if (e instanceof SQLRecoverableException) {
 				throw new Exception("삭제 도중 네트워크 오류가 발생했습니다.");
 			} else {
 				throw new Exception("해당 id가 존재하지 않습니다.");
 			}
-		 // 1차 dao에서 한번 던졌고 여기가 두번째라 문구쓴다.
+			// 1차 dao에서 한번 던졌고 여기가 두번째라 문구쓴다.
 		}
 	}
 
 	@Override
 	public Cust get(String k) throws Exception {
+		// 1.셀렉트 : 반환받을 값(cust)을 먼저 초기화 해줄 것.
 		Cust cust = null;
-		cust = dao.select(k);
+
+		try {
+			cust = dao.select(k);
+		} catch (SQLException e) {
+			if (e instanceof SQLRecoverableException) {
+				throw new Exception("시스템 장애가 발생했습니다."); // 서버오류일 때
+			} else {
+				throw new Exception("조회할 id가 존재하지 않습니다."); // 조회 할 데이터 없을 때
+			}
+		}
 		return cust;
-		
+
 	}
 
 	@Override
 	public List<Cust> get() throws Exception {
-
-		return null;
+		//1.셀렉트All : 반환받을 바구니(list)을 먼저 초기화 해줄 것.
+		
+		List<Cust> list = null;
+		try{
+			list = dao.selectAll();
+		}catch(Exception e) {
+			if(e instanceof SQLRecoverableException) {
+				throw new Exception("시스템 장애가 발생했습니다."); //서버오류일 때
+			}
+		}
+		
+		return list;
 	}
 
 }

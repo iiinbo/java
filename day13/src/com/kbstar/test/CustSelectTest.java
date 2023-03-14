@@ -12,7 +12,7 @@ public class CustSelectTest {
 		
 		Cust cust = null;
 		try {
-			cust = crudService.get("id03");
+			cust = crudService.get("id77");
 			System.out.println(cust);
 			System.out.println("성공적으로 조회가 완료되었습니다.");
 		} catch (Exception e) {

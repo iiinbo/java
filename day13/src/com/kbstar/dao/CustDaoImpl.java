@@ -16,7 +16,7 @@ import com.kbstar.frame.Sql;
 
 public class CustDaoImpl implements DAO<String, String, Cust> {
 	Cust cust = new Cust();
-	
+
 	// 1. jdbc에서 각각 실행해주던걸, Driver Loading 한번으로 할 수 있다.
 	public CustDaoImpl() {
 		try {
@@ -44,7 +44,7 @@ public class CustDaoImpl implements DAO<String, String, Cust> {
 		String pwd = props.getProperty("DB_PWD");
 		String url = props.getProperty("DB_URL"); // 1521 사용자모드
 		con = DriverManager.getConnection(url, id, pwd); // 커넥션 값생성
-		
+
 		return con;
 	}
 
@@ -99,61 +99,66 @@ public class CustDaoImpl implements DAO<String, String, Cust> {
 		}
 	}
 
-	@Override
+	@Override // 에러케이스1 : 조회할 건 없으면 null이라고 나옴, 2 : 서버 죽어도 null
 	public Cust select(String k) throws Exception {
+		// 셀렉트는 반환할 값 있기에 선언 필수
 		Cust cust = null;
-		try (Connection con = getConnection();
-				PreparedStatement pstmt = con.prepareStatement(Sql.selectSql);) {
-			
-			pstmt.setString(1, k); // 첫번째 물음표자리에 값 세팅.
-			try(ResultSet rset = pstmt.executeQuery()) { //셀렉트일 때 : executeQuery()
-				rset.next(); //매우중요!!!! 한칸 이동 후 조회가능!
-				
-				String db_id = rset.getString("id"); //적은 컬럼명의 데이터를 끄집어 내자.
-				String db_pwd = rset.getString("pwd");
-				String name = rset.getString("name");
-				int age = rset.getInt("age");
-				cust = new Cust(db_id, db_pwd, name, age);
-				System.out.println(db_id+""+name+""+age);
-				//조회된 결과는 여기로 : rset 담긴다
-				
-			} catch(SQLException e1) {
-				e1.printStackTrace(); //정상적으로 가져오고 나면  *close를 자동으로 실행해준다.*
+
+		// 1. 정상으로 끝나도 자동으로 close해줄게. try()안에 선언하면.
+		// 2. Sql문으로 전송해줄게. try()안에 선언하면.
+		try (Connection con = getConnection(); PreparedStatement pstmt = con.prepareStatement(Sql.selectSql);) {
+			pstmt.setString(1, k);
+
+			// 문제발생 시 close 자동으로 하기 위해 한번 더 try안에 try문 입력
+			// 참고. executeQuery : 데이터를 가져온다.
+			try (ResultSet rset = pstmt.executeQuery()) {
+				rset.next(); // 끄집어내기 전 한칸 이동 후.
+
+				String id = rset.getString("id"); // 끄집어낼 값 : "id"는 컬럼명.
+				String pwd = rset.getString("pwd"); // 끄집어낼 값 : "pwd"는 컬럼명.
+				String name = rset.getString("name"); // 끄집어낼 값 : "name"는 컬럼명.
+				int age = rset.getInt("age"); // 끄집어낼 값 : "age"는 컬럼명.
+
+				cust = new Cust(id, pwd, name, age); // cust 객체 생성이 마지막이다.
+			} catch (Exception e) {
+				throw e; // 여긴 조회할 데이터 없을 때 발생 구간 -> 에러는 ServiceImpl로 던졌다. 거기서 세부문구
 			}
-		} catch (SQLException e) { //못가져와도  *close를 자동으로 실행해준다.*
-			throw e;
-		}return cust;
+
+		} catch (Exception e) {
+			throw e; // 여긴 네트웤오류 발생구간 -> 에러는 ServiceImpl로 던졌다. 거기서 세부문구
+		}
+		return cust;
 	}
 
-	@Override
+	@Override //에러케이스 1 : 조회할 데이터 없으면 공백으로 처리된다.
 	public List<Cust> selectAll() throws Exception {
-		List<Cust> list = new ArrayList<Cust>();
-		//Collection<Cust> col = db.values();
-		
-		try (Connection con = getConnection();
-				PreparedStatement pstmt = con.prepareStatement(Sql.updateSql);) {
-			
-			try(ResultSet rset = pstmt.executeQuery()) { //셀렉트일 때 : executeQuery()
-				//전체조회는 한 칸씩 이동해서 데이터 개수만큼 while문이 돌면서 데이터 전부 끄집어낸다.
-				while(rset.next()) {//조회된 결과는 여기로 : rset 담긴다
-					String db_id = rset.getString("id"); //컬럼의 데이터를 끄집어 내자.
-					String db_pwd = rset.getString("pwd");
-					String name = rset.getString("name");
-					int age = rset.getInt("age");
-					System.out.println(db_id+""+name+""+age);
-				}
+		List<Cust> list = new ArrayList<>();
 
-			} catch(SQLException e1) {
-				throw e1; //정상적으로 가져오고 나면  *close를 자동으로 실행해준다.*
+		try (Connection con = getConnection(); PreparedStatement pstmt = con.prepareStatement(Sql.selectAllSql);) {
+			try (ResultSet rset = pstmt.executeQuery();) {
+				// 셀렉트 올은 와일문~
+				while (rset.next()) {
+					Cust cust = null; // 안에서 초기화 가능
+					String id = rset.getString("id"); // 끄집어낼 값 : "id"는 컬럼명.
+					String pwd = rset.getString("pwd"); // 끄집어낼 값 : "pwd"는 컬럼명.
+					String name = rset.getString("name"); // 끄집어낼 값 : "name"는 컬럼명.
+					int age = rset.getInt("age"); // 끄집어낼 값 : "age"는 컬럼명.
+
+					cust = new Cust(id, pwd, name, age); // cust 객체 생성이 마지막이다.
+					list.add(cust); // 한바퀴 돌아서나온 값은 list에 넣자.
+				}
+			} catch (Exception e) {
+
 			}
-		} catch (SQLException e) { //못가져와도  *close를 자동으로 실행해준다.*
+		} catch (Exception e) {
 			throw e;
-		}return null;
+		}
+		return list;
 	}
 
 	@Override
 	public List<Cust> search(String k) throws Exception {
-
+		// TODO Auto-generated method stub
 		return null;
 	}
 

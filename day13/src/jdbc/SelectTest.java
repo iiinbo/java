@@ -30,6 +30,7 @@ public class SelectTest {
 			// Connection생성과 Statement 생성을 밖이 아니라 try구문 () 안에.
 			// try구문 안에 쓰면, *close를 자동으로 실행해준다.*
 			pstmt.setString(1, "id02"); // 첫번째 물음표자리에 값 세팅.
+			
 			try(ResultSet rset = pstmt.executeQuery()) { //셀렉트일 때 : executeQuery()
 				rset.next(); //매우중요!!!! 한칸 이동 후 조회가능!
 				String db_id = rset.getString("id"); //적은 컬럼명의 데이터를 끄집어 내자.

@@ -10,7 +10,7 @@ public class CustInsertTest {
 		//회원가입을 시키기 위해 cust가 필요하니까.
 		CRUDService<String, Cust> crudService = new CustCRUDServiceImpl();
 		
-		Cust cust = new Cust("id20", "pwd02", "tom", 0);
+		Cust cust = new Cust("id77", "pwd77", "정인보",25);
 		try {
 			crudService.register(cust);
 			System.out.println("성공적으로 입력이 완료되었습니다.");
