@@ -23,7 +23,7 @@ public class CustDaoImpl implements DAO<String, String, Cust> {
 			e.printStackTrace();
 			return; // 예외상황 발생 시 종료해줘
 		}
-		System.out.println("Driver Loading 성공!");
+		//System.out.println("Driver Loading 성공!");
 	}
 
 	

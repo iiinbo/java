@@ -22,4 +22,5 @@ public class Sql {
 	public static String cartUpdateSql = "UPDATE cart SET user_id=?, item_id=?, cnt=? WHERE id = ?"; //WHERE절 누락 주의!
 	public static String cartselectSql = "SELECT * FROM cart WHERE id = ?";
 	public static String cartselectAllSql = "SELECT * FROM cart";
+	public static String mycartselectAllSql ="SELECT * FROM cart WHERE user_id = ?"; //특정 id를 가진 고객의 카트정보만 가져와줘(search)
 }	

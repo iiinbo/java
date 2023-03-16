@@ -23,7 +23,7 @@ public class ItemDaoImpl implements DAO<String, String, Item> {// 1.id 2.search�
 			e.printStackTrace();
 			return; // 예외상황 발생 시 종료해줘
 		}
-		System.out.println("Driver Loading 성공!");
+		//System.out.println("Driver Loading 성공!");
 	}
 
 	// 2. jdbc에서 각각 실행해주던 커넥션도 한번에 인터페이스에서 한번에 지정했다.(여긴생략)

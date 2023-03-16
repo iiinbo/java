@@ -24,7 +24,7 @@ public class CartDaoImpl implements DAO<String, String, Cart> {
 			e.printStackTrace();
 			return; // 예외상황 발생 시 종료해줘
 		}
-		System.out.println("Driver Loading 성공!");
+		//System.out.println("Driver Loading 성공!");
 	}
 
 	// Cart에 대한 입력~수정~삭제 기능
@@ -134,10 +134,39 @@ public class CartDaoImpl implements DAO<String, String, Cart> {
 				return list;
 	}
 
-	@Override
+	@Override //해당하는 사용자id를 (list에)집어넣으면, 적합한 카트정보를 줘.
 	public List<Cart> search(String k) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// 사용자 id가 같은 카트들을 -> 담을 바구니 만들기.
+		List<Cart> list = new ArrayList<>();
+
+		try (Connection con = getConnection();
+				PreparedStatement pstmt = con.prepareStatement(Sql.mycartselectAllSql);) {
+			
+			//이 조건으로 데이터를 조회해줘~
+			pstmt.setString(1, k); //k : 사용자의 id값
+			try(ResultSet rset = pstmt.executeQuery();){
+				
+				while(rset.next()) {
+					Cart cart = null; 
+					String id = rset.getString("id");
+					String user_id = rset.getString("user_id");
+					String item_id = rset.getString("item_id");
+					int cnt = rset.getInt("cnt");
+					Date regdate = rset.getDate("regdate");
+
+					cart = new Cart(id, user_id, item_id ,cnt, regdate); // 객체 생성
+					list.add(cart); // 한바퀴 돌아서나온 값은 list에 넣자.
+				}
+			}catch(Exception e) {
+				throw e;
+			}
+			
+		} catch (Exception e) {
+			throw e; // 예외발생 시 서비스로 던진다.
+		}
+
+		return list;
 	}
 
 }
